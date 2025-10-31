@@ -8,21 +8,49 @@ public class TutorialEventsManager : MonoBehaviour
 
     [Header("Ajustes")]
     public float Duracion = 3.0f;
-    public string MensajeTexto = "¡Cuidado con el perro!";
     public GameObject PerroObjeto;
+    private bool triggered = false;
 
+    public Transition_Manager transitionManager;
+    public Transform playerStartPoint;
+
+    [Header("Carpetas de Fondos")]
+    public GameObject currentRoomBackground;
+    public GameObject nextRoomBackground;
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            CambioDeEscena();
+            triggered = true;
+            GetComponent<Collider2D>().enabled = false;
+            StartCoroutine(TransitionSequence(other.transform));
         }
     }
 
-    public void CambioDeEscena()
+    private IEnumerator TransitionSequence(Transform playerTransform)
     {
-        Debug.Log("Cambio de escena activado");
         GameManager.Instance.SetCinematicMode(true);
+
+        yield return transitionManager.StartCoroutine(transitionManager.FadeIn());
+
+        playerTransform.position = playerStartPoint.position;
+
+        if (currentRoomBackground != null)
+        {
+            currentRoomBackground.SetActive(false);
+        }
+        if (nextRoomBackground != null)
+        {
+            nextRoomBackground.SetActive(true);
+        }
+
+        // Opcional: Si el PlayerController tiene una lógica de reinicio, puedes llamarla aquí.
+
+        yield return transitionManager.StartCoroutine(transitionManager.FadeOut());
+
+        GameManager.Instance.SetCinematicMode(false);
+
+        // Destroy(gameObject); 
     }
     public void ActivarEvento()
     {
@@ -38,7 +66,7 @@ public class TutorialEventsManager : MonoBehaviour
     private IEnumerator PerroSecuencia()
     {
         Debug.Log("debug: inicio del evento");
-        Debug.Log(MensajeTexto);
+                
 
         yield return new WaitForSeconds(Duracion);
 
