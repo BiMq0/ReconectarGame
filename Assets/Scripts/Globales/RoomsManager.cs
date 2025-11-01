@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Cinemachine; 
+using Cinemachine; // Importante para controlar las cámaras virtuales
+
 public class RoomsManager : MonoBehaviour
 {
     public static RoomsManager Instance { get; private set; }
@@ -11,7 +11,7 @@ public class RoomsManager : MonoBehaviour
     public Transition_Manager transitionManager;
 
     [Header("Configuración del Mapa")]
-    [Tooltip("Nombres de las escenas de la mazmorra, en orden de izquierda a derecha.")]
+    [Tooltip("Nombres de las scene del nivel, en orden de izquierda a derecha.")]
     public string[] dungeonScenes;
 
     private Transform playerTransform;
@@ -30,7 +30,6 @@ public class RoomsManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     void Start()
     {
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
@@ -44,7 +43,6 @@ public class RoomsManager : MonoBehaviour
             Debug.LogError("FATAL: El jugador no está taggeado como 'Player' o no existe al inicio.");
         }
     }
-
     private int GetCurrentSceneIndex()
     {
         string currentName = SceneManager.GetActiveScene().name;
@@ -55,13 +53,12 @@ public class RoomsManager : MonoBehaviour
                 return i;
             }
         }
-        return 0; // Por defecto.
+        return 0; // Por defecto
     }
-
-    // =========================================================================
-    // MÉTODO DE CONTROL DE TRANSICIÓN
-    // =========================================================================
-
+    public (int currentIndex, int totalScenes) GetMapState()
+    {
+        return (currentSceneIndex, dungeonScenes.Length);
+    }
     public void GoToRoom(int direction)
     {
         int nextIndex = currentSceneIndex + direction;
@@ -79,67 +76,46 @@ public class RoomsManager : MonoBehaviour
 
     private IEnumerator LoadNewRoomSequence(int newIndex)
     {
-        // 0. BLOQUEAR CONTROLES
-        GameManager.Instance.SetCinematicMode(true);
+        if (GameManager.Instance != null) GameManager.Instance.SetCinematicMode(true);
 
-        // 1. FADE-IN (Pantalla Negra)
-        yield return transitionManager.StartCoroutine(transitionManager.FadeIn());
+        if (transitionManager != null) yield return transitionManager.StartCoroutine(transitionManager.FadeIn());
 
-        // 2. CARGA ASÍNCRONA DE LA NUEVA ESCENA
         currentSceneIndex = newIndex;
         string sceneName = dungeonScenes[newIndex];
-
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName);
 
-        // Espera a que la nueva escena termine de cargar
         while (!loadOperation.isDone)
         {
             yield return null;
         }
 
         TeleportPlayerToEntrance();
-        ReEngageCinemachine(); // <-- ¡Engancha la CM de la nueva escena!
+        ReEngageCinemachine();
 
-        yield return transitionManager.StartCoroutine(transitionManager.FadeOut());
+        if (transitionManager != null) yield return transitionManager.StartCoroutine(transitionManager.FadeOut());
 
-        // 5. DEVOLVER CONTROLES
-        GameManager.Instance.SetCinematicMode(false);
+        if (GameManager.Instance != null) GameManager.Instance.SetCinematicMode(false);
     }
-
-    // =========================================================================
-    // LÓGICA DE CINEMACHINE
-    // =========================================================================
 
     private void ReEngageCinemachine()
     {
         if (playerTransform == null) return;
 
+        // Busca la Virtual Camera en la escena que acaba de cargarse.
         CinemachineVirtualCamera vCam = FindObjectOfType<CinemachineVirtualCamera>();
 
         if (vCam != null)
         {
-            // Asignar el Transform del jugador persistente al Follow y Look At de la VCam.
+            // Asigna el Transform del jugador persistente.
             vCam.Follow = playerTransform;
             vCam.LookAt = playerTransform;
-            Debug.Log("Cinemachine re-enganchada al jugador en la nueva escena.");
-        }
-        else
-        {
-            Debug.LogWarning("No se encontró una Cinemachine Virtual Camera en la nueva escena.");
         }
     }
-
-    // =========================================================================
-    // LÓGICA DE TELETRANSPORTE
-    // =========================================================================
 
     private void TeleportPlayerToEntrance()
     {
         if (playerTransform == null) return;
 
-        // Determinar el Tag del Spawn Point:
-        // Si avanzamos (1), aparecemos en el punto IZQUIERDO.
-        // Si retrocedemos (-1), aparecemos en el punto DERECHO.
         string spawnTag = (spawnDirection > 0) ? "SpawnPointLeft" : "SpawnPointRight";
 
         GameObject spawnPointGO = GameObject.FindGameObjectWithTag(spawnTag);
@@ -147,11 +123,10 @@ public class RoomsManager : MonoBehaviour
         if (spawnPointGO != null)
         {
             playerTransform.position = spawnPointGO.transform.position;
-            Debug.Log($"Jugador teletransportado a {spawnTag} en la escena {dungeonScenes[currentSceneIndex]}.");
         }
         else
         {
-            Debug.LogError($"ERROR EN TELETRANSPORTE: No se encontró el punto de aparición con el Tag '{spawnTag}' en la escena: {dungeonScenes[currentSceneIndex]}.");
+            Debug.LogError($"ERROR: No se encontró el punto de aparición con el Tag '{spawnTag}'.");
         }
     }
 }
