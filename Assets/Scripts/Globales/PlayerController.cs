@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-
 public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
@@ -21,11 +18,12 @@ public class PlayerController : MonoBehaviour
     public InputActionAsset playerActions;
     private Animator animator;
     private Rigidbody2D rb;
-    public GameObject pauseDisplay;
 
     private Vector2 movementInput;
     bool isFacingRight = true;
     private bool isInputBlocked = false;
+
+    private static PlayerController Instance;
 
     private void OnEnable()
     {
@@ -33,25 +31,37 @@ public class PlayerController : MonoBehaviour
         GameManager.CambioEstadoControles += HandleCambioControles;
     }
 
-    private void GameManager_CambioEstadoControles(bool obj)
-    {
-        throw new NotImplementedException();
-    }
-
     private void OnDisable()
     {
         playerActions.FindActionMap("Player").Disable();
+        GameManager.CambioEstadoControles -= HandleCambioControles;
     }
+
     private void Awake()
     {
+        // 2. Lógica de Persistencia (Singleton)
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         movementAction = playerActions.FindActionMap("Player").FindAction("Movimiento");
         jumpAction = playerActions.FindActionMap("Player").FindAction("Salto");
 
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
-        isInputBlocked = GameManager.IsEventActive;
+        // Lee el estado actual del GameManager al inicio
+        // Asegúrate de que GameManager.IsCinematicActive exista en tu GameManager.cs
+        // isInputBlocked = GameManager.IsCinematicActive; 
     }
+
     private void HandleCambioControles(bool isBlocked)
     {
         isInputBlocked = isBlocked;

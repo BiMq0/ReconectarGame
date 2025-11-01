@@ -20,14 +20,12 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     public void SetCinematicMode(bool isActive)
     {
         if (IsEventActive == isActive)
             return;
 
         IsEventActive = isActive;
-
         CambioEstadoControles?.Invoke(isActive);
     }
 }
