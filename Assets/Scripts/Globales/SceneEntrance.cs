@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// Este script va en los GameObjects SpawnPointLeft y SpawnPointRight.
 public class SceneEntranceTrigger : MonoBehaviour
 {
     [Header("Configuración de Dirección")]
@@ -8,7 +7,6 @@ public class SceneEntranceTrigger : MonoBehaviour
     public int directionToMove = 1;
 
     private Collider2D triggerCollider;
-    // Eliminamos la variable privada 'roomsManager'
 
     private void Awake()
     {
@@ -22,7 +20,6 @@ public class SceneEntranceTrigger : MonoBehaviour
 
     private void OnEnable()
     {
-        // Usamos RoomsManager.Instance directamente.
         if (RoomsManager.Instance == null || triggerCollider == null) return;
 
         (int currentIndex, int totalScenes) = RoomsManager.Instance.GetMapState();
