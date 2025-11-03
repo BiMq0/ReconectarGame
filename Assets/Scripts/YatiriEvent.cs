@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class YatiriEvent : MonoBehaviour
 {
     [Header("Configuración del Evento")]
-    [Tooltip("ID único para este evento (ej: 'NPC_Jefe_Sala1').")]
+    [Tooltip("ID único para este evento")]
     public string eventID;
 
     [Header("Referencias")]

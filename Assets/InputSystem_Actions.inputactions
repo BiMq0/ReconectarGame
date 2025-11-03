@@ -59,6 +59,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SaltarDialogo",
+                    "type": "Button",
+                    "id": "860d68aa-5690-470b-bd4d-5efe8f9adcc8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -224,6 +233,28 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Pausa",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "693f82ec-4bc1-40b3-ac0a-d295f860a09b",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SaltarDialogo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d5e47f67-8e54-40ab-8778-9f9fc9ac01de",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SaltarDialogo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

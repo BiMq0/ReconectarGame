@@ -59,6 +59,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // =============================================================
+    // MÉTODOS DE PERSISTENCIA DE DECISIONES (VALORES)
+    // =============================================================
+
+    // Guarda la decisión (un entero) asociada a un EventID.
+    public void SaveDecision(string eventID, int choiceValue)
+    {
+        string key = eventID + "_DECISION";
+        PlayerPrefs.SetInt(key, choiceValue);
+        PlayerPrefs.Save();
+        Debug.Log($"Decisión '{choiceValue}' guardada para el evento '{eventID}'.");
+    }
+
+    // Carga la decisión (un entero). Retorna 0 si no se encuentra.
+    public int LoadDecision(string eventID)
+    {
+        string key = eventID + "_DECISION";
+        return PlayerPrefs.GetInt(key, 0); 
+    }
     public void SaveGame()
     {
         string serializedEvents = string.Join(Separator.ToString(), completedEvents);
