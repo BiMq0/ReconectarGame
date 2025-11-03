@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        // 2. L�gica de Persistencia (Singleton)
         if (Instance == null)
         {
             Instance = this;
@@ -86,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
         if (jumpAction.WasPressedThisFrame() && IsGrounded())
         {
-            Jump();
+            // Jump();
         }
     }
     private void FixedUpdate()

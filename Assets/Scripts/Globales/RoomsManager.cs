@@ -1,7 +1,19 @@
+using System; 
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Cinemachine; // Importante para controlar las cámaras virtuales
+using Cinemachine;
+
+[System.Serializable]
+public class LevelConfig
+{
+    [Tooltip("ID único para este nivel.")]
+    public string levelID;
+    [Tooltip("Nombres de las escenas de este nivel, en orden.")]
+    public string[] sceneNames;
+    [Tooltip("El índice de la escena que se cargará al iniciar el nivel (ej: 0).")]
+    public int startSceneIndex = 0;
+}
 
 public class RoomsManager : MonoBehaviour
 {
@@ -9,12 +21,14 @@ public class RoomsManager : MonoBehaviour
 
     [Header("Referencias")]
     public Transition_Manager transitionManager;
-
-    [Header("Configuración del Mapa")]
-    [Tooltip("Nombres de las scene del nivel, en orden de izquierda a derecha.")]
-    public string[] dungeonScenes;
-
     private Transform playerTransform;
+
+    [Header("Configuración de Niveles")]
+    [Tooltip("Define cada nivel con su ID y su lista de escenas.")]
+    public LevelConfig[] allLevels;
+
+    // Estado actual del Manager
+    private LevelConfig currentLevelConfig;
     private int currentSceneIndex = 0;
     private int spawnDirection = 1;
 
@@ -30,47 +44,66 @@ public class RoomsManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     void Start()
     {
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
         if (playerGO != null)
         {
             playerTransform = playerGO.transform;
-            currentSceneIndex = GetCurrentSceneIndex();
+        }
+        string activeSceneName = SceneManager.GetActiveScene().name;
+        currentLevelConfig = Array.Find(allLevels, level => Array.Exists(level.sceneNames, name => name == activeSceneName));
+
+        if (currentLevelConfig != null)
+        {
+            currentSceneIndex = Array.IndexOf(currentLevelConfig.sceneNames, activeSceneName);
+        }
+        else if (allLevels.Length > 0)
+        {
+            currentLevelConfig = allLevels[0];
+            currentSceneIndex = 0;
         }
         else
         {
-            Debug.LogError("FATAL: El jugador no está taggeado como 'Player' o no existe al inicio.");
+            Debug.LogError("RoomsManager: No hay niveles configurados en el Inspector.");
         }
     }
-    private int GetCurrentSceneIndex()
+
+    // =============================================================
+    // MÉTODO NUEVO: CAMBIO DE NIVEL COMPLETO
+    // =============================================================
+    public void ChangeLevel(string newLevelID)
     {
-        string currentName = SceneManager.GetActiveScene().name;
-        for (int i = 0; i < dungeonScenes.Length; i++)
+        LevelConfig nextConfig = Array.Find(allLevels, level => level.levelID == newLevelID);
+
+        if (nextConfig != null)
         {
-            if (dungeonScenes[i] == currentName)
-            {
-                return i;
-            }
+            currentLevelConfig = nextConfig;
+
+            spawnDirection = 1;
+            StartCoroutine(LoadNewRoomSequence(currentLevelConfig.startSceneIndex));
         }
-        return 0; // Por defecto
+        else
+        {
+            Debug.LogError($"RoomsManager: Nivel ID '{newLevelID}' no encontrado en la configuración.");
+        }
     }
-    public (int currentIndex, int totalScenes) GetMapState()
-    {
-        return (currentSceneIndex, dungeonScenes.Length);
-    }
+
     public void GoToRoom(int direction)
     {
+        if (currentLevelConfig == null) { Debug.LogError("RoomsManager: No hay nivel activo."); return; }
+
         int nextIndex = currentSceneIndex + direction;
 
-        if (nextIndex >= 0 && nextIndex < dungeonScenes.Length)
+        if (nextIndex >= 0 && nextIndex < currentLevelConfig.sceneNames.Length)
         {
             spawnDirection = direction;
             StartCoroutine(LoadNewRoomSequence(nextIndex));
         }
         else
         {
-            Debug.Log($"ALCANCE EL TOPE. Dirección: {direction}. Índice: {nextIndex}");
+            Debug.Log($"ALCANCE EL TOPE del Nivel '{currentLevelConfig.levelID}'.");
         }
     }
 
@@ -81,7 +114,8 @@ public class RoomsManager : MonoBehaviour
         if (transitionManager != null) yield return transitionManager.StartCoroutine(transitionManager.FadeIn());
 
         currentSceneIndex = newIndex;
-        string sceneName = dungeonScenes[newIndex];
+        string sceneName = currentLevelConfig.sceneNames[newIndex];
+
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName);
 
         while (!loadOperation.isDone)
@@ -97,36 +131,36 @@ public class RoomsManager : MonoBehaviour
         if (GameManager.Instance != null) GameManager.Instance.SetCinematicMode(false);
     }
 
-    private void ReEngageCinemachine()
-    {
-        if (playerTransform == null) return;
-
-        // Busca la Virtual Camera en la escena que acaba de cargarse.
-        CinemachineVirtualCamera vCam = FindObjectOfType<CinemachineVirtualCamera>();
-
-        if (vCam != null)
-        {
-            // Asigna el Transform del jugador persistente.
-            vCam.Follow = playerTransform;
-            vCam.LookAt = playerTransform;
-        }
-    }
-
+    // --- TeleportPlayerToEntrance (Se mantiene igual) ---
     private void TeleportPlayerToEntrance()
     {
-        if (playerTransform == null) return;
+        string spawnTag = spawnDirection == 1 ? "SpawnPointLeft" : "SpawnPointRight";
 
-        string spawnTag = (spawnDirection > 0) ? "SpawnPointLeft" : "SpawnPointRight";
+        GameObject spawnPoint = GameObject.FindGameObjectWithTag(spawnTag);
 
-        GameObject spawnPointGO = GameObject.FindGameObjectWithTag(spawnTag);
-
-        if (spawnPointGO != null)
+        if (playerTransform != null && spawnPoint != null)
         {
-            playerTransform.position = spawnPointGO.transform.position;
+            playerTransform.position = spawnPoint.transform.position;
+            Debug.Log($"Teleportado a: {spawnTag} en la escena {currentSceneIndex}.");
         }
         else
         {
-            Debug.LogError($"ERROR: No se encontró el punto de aparición con el Tag '{spawnTag}'.");
+            Debug.LogError($"No se pudo encontrar el punto de aparición con la etiqueta: {spawnTag}");
         }
+    }
+
+    private void ReEngageCinemachine()
+    {
+        CinemachineVirtualCamera vCam = FindObjectOfType<CinemachineVirtualCamera>();
+        if (vCam != null && playerTransform != null)
+        {
+            vCam.Follow = playerTransform;
+        }
+    }
+
+    public (int currentIndex, int totalScenes) GetMapState()
+    {
+        if (currentLevelConfig == null) return (0, 0);
+        return (currentSceneIndex, currentLevelConfig.sceneNames.Length);
     }
 }
