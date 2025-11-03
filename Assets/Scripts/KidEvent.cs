@@ -30,7 +30,7 @@ public class KidEvent : MonoBehaviour
 
     [Header("Referencias de UI")]
     public GameObject interactionIndicator;
-    public GameObject dialoguePanel;
+    public GameObject dialoguePanel; 
     public TextMeshProUGUI dialogueText;
     public Image kidExpressionImage;
     public Sprite[] carasNiño;
@@ -45,15 +45,14 @@ public class KidEvent : MonoBehaviour
     [Header("Ajustes de Diálogo")]
     public float typeSpeed = 50f;
 
-    // VARIABLES DE INPUT Y ESTADO
-    private InputAction interactAction; 
-    private InputAction dialogueAdvanceAction; 
+    private InputAction interactAction;
+    private InputAction dialogueAdvanceAction;
     private bool playerIsInRange = false;
     private bool isTyping = false;
     private int playerChoice = 0;
 
     // =============================================================
-    // CICLO DE VIDA
+    // CICLO DE VIDA (Sin cambios)
     // =============================================================
     void Start()
     {
@@ -74,12 +73,8 @@ public class KidEvent : MonoBehaviour
         PlayerController player = FindObjectOfType<PlayerController>();
         if (player != null && player.playerActions != null)
         {
-            // 1. Asignación del botón de INICIAR (se mantiene)
             interactAction = player.playerActions.FindActionMap("Player").FindAction("Interactuar");
-
-            // 2. Asignación del botón de AVANZAR/SALTEAR (NUEVO)
             dialogueAdvanceAction = player.playerActions.FindActionMap("Player").FindAction("SaltarDialogo");
-
             if (dialogueAdvanceAction == null)
             {
                 Debug.LogError("La acción 'SaltarDialogo' no se encontró en la Action Map 'Player'.");
@@ -104,7 +99,6 @@ public class KidEvent : MonoBehaviour
         }
     }
 
-    // El evento se inicia con 'Interactuar'
     void Update()
     {
         if (playerIsInRange && interactAction != null && interactAction.WasPressedThisFrame())
@@ -125,7 +119,7 @@ public class KidEvent : MonoBehaviour
     }
 
     // =============================================================
-    // FLUJO PRINCIPAL Y DIÁLOGO (NO CAMBIADO)
+    // FLUJO PRINCIPAL Y DIÁLOGO (Sin cambios, solo el final)
     // =============================================================
     private IEnumerator HandleDecisionSequence()
     {
@@ -154,13 +148,14 @@ public class KidEvent : MonoBehaviour
         {
             yield return StartCoroutine(RunDialogue(finalRoute));
         }
+
         if (!GameManager.Instance.IsEventCompleted(eventID))
         {
             GameManager.Instance.MarkEventCompleted(eventID);
             GameManager.Instance.SaveDecision(eventID, playerChoice);
         }
 
-        dialoguePanel.SetActive(false);
+        dialoguePanel.SetActive(false); 
         GameManager.Instance.SetCinematicMode(false);
         enabled = false;
     }
@@ -186,9 +181,6 @@ public class KidEvent : MonoBehaviour
         }
     }
 
-    // =============================================================
-    // MÉTODO MODIFICADO (USA dialogueAdvanceAction)
-    // =============================================================
     private IEnumerator TypeAndAdvance(DialogueLine line)
     {
         string speakerPrefix = line.speaker == Speaker.NPC ? "Niño: " : "Player: ";
@@ -197,7 +189,7 @@ public class KidEvent : MonoBehaviour
         if (dialogueAdvanceAction == null)
         {
             dialogueText.text = fullText;
-            yield break; // Evitar error si no hay acción asignada
+            yield break;
         }
 
         isTyping = true;
@@ -208,7 +200,6 @@ public class KidEvent : MonoBehaviour
         {
             dialogueText.text += c;
 
-            // 1. Saltando el Tipeo con SaltarDialogo
             if (dialogueAdvanceAction.WasPressedThisFrame())
             {
                 dialogueText.text = fullText;
@@ -220,12 +211,14 @@ public class KidEvent : MonoBehaviour
 
         isTyping = false;
 
-        // 2. Esperando el Clic para Avanzar con SaltarDialogo
         yield return new WaitUntil(() => dialogueAdvanceAction.WasPressedThisFrame());
 
         yield return null;
     }
 
+    // =============================================================
+    // CORRECCIÓN CLAVE: MANTENER dialoguePanel ACTIVO
+    // =============================================================
     private IEnumerator WaitForPlayerChoice()
     {
         if (DecisionManager.Instance == null)
@@ -235,14 +228,11 @@ public class KidEvent : MonoBehaviour
             yield break;
         }
 
-        dialoguePanel.SetActive(false);
-
         yield return DecisionManager.Instance.StartCoroutine(
-            DecisionManager.Instance.WaitForDecision(decisionOptions, (choice) => {
+            DecisionManager.Instance.WaitForDecision(decisionOptions, (choice) =>
+            {
                 playerChoice = choice;
             })
         );
-
-        dialoguePanel.SetActive(true);
     }
 }

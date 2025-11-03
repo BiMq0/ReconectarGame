@@ -1,9 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro; 
 public class DecisionManager : MonoBehaviour
 {
     public static DecisionManager Instance { get; private set; }
@@ -18,11 +17,15 @@ public class DecisionManager : MonoBehaviour
 
     void Awake()
     {
+        // Singleton
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            decisionPanel.SetActive(false);
+            if (decisionPanel != null)
+            {
+                decisionPanel.SetActive(false);
+            }
         }
         else
         {
@@ -32,27 +35,54 @@ public class DecisionManager : MonoBehaviour
 
     void Start()
     {
+        // Asignar listeners a los botones
         for (int i = 0; i < choiceButtons.Length; i++)
         {
-            int choice = i + 1; 
-            choiceButtons[i].onClick.AddListener(() => OnChoiceSelected(choice));
+            if (choiceButtons[i] != null)
+            {
+                int choice = i + 1; // 1, 2, 3
+                choiceButtons[i].onClick.AddListener(() => OnChoiceSelected(choice));
+            }
+            else
+            {
+                Debug.LogError($"DecisionManager: Botón en el índice {i} no asignado en el Inspector.");
+            }
         }
     }
 
     public IEnumerator WaitForDecision(string[] dialogueOptions, Action<int> callback)
     {
+        if (decisionPanel == null)
+        {
+            Debug.LogError("DecisionPanel es nulo. Asigna el panel contenedor de botones en el Inspector.");
+            yield break;
+        }
+
         onDecisionMade = callback;
 
         for (int i = 0; i < choiceButtons.Length; i++)
         {
+            if (choiceButtons[i] == null) continue;
+
             if (i < dialogueOptions.Length)
             {
-                choiceButtons[i].GetComponentInChildren<Text>().text = dialogueOptions[i];
+                // *** CORRECCIÓN PARA TEXTMESHPRO ***
+                TextMeshProUGUI buttonText = choiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+                if (buttonText != null)
+                {
+                    buttonText.text = dialogueOptions[i];
+                }
+                else
+                {
+                    Debug.LogWarning($"El botón {i} no tiene un componente TextMeshProUGUI hijo.");
+                }
+                // **********************************
+
                 choiceButtons[i].gameObject.SetActive(true);
             }
             else
             {
-                choiceButtons[i].gameObject.SetActive(false); 
+                choiceButtons[i].gameObject.SetActive(false);
             }
         }
 

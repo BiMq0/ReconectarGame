@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     [Header("Acciones")]
     private InputAction movementAction;
     private InputAction jumpAction;
-    private InputAction interactAction; // Para iniciar el diálogo/interacción
-    private InputAction dialogueAdvanceAction; // Para avanzar/saltar el diálogo (NUEVO)
+    private InputAction interactAction; 
+    private InputAction dialogueAdvanceAction; 
 
     [Header("Componentes")]
     public InputActionAsset playerActions;
