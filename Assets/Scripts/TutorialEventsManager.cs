@@ -7,7 +7,7 @@ public class TutorialEventsManager : MonoBehaviour
     private bool eventTriggered = false;
 
     [Header("Ajustes")]
-    public float Duracion = 3.0f;
+    public float Duracion = 8.0f;
     public GameObject PerroObjeto;
     public void ActivarEvento()
     {
@@ -23,7 +23,7 @@ public class TutorialEventsManager : MonoBehaviour
     private IEnumerator PerroSecuencia()
     {
         Debug.Log("debug: inicio del evento");
-                
+
 
         yield return new WaitForSeconds(Duracion);
 

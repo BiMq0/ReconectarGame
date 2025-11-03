@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        // 2. Lógica de Persistencia (Singleton)
+        // 2. Lï¿½gica de Persistencia (Singleton)
         if (Instance == null)
         {
             Instance = this;
@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         // Lee el estado actual del GameManager al inicio
-        // Asegúrate de que GameManager.IsCinematicActive exista en tu GameManager.cs
+        // Asegï¿½rate de que GameManager.IsCinematicActive exista en tu GameManager.cs
         // isInputBlocked = GameManager.IsCinematicActive; 
     }
 
@@ -118,10 +118,11 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        if (!IsGrounded()) return;
         rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
     }
     private bool IsGrounded()
     {
-        return true;
+        return rb.velocity.y <= 0.1f;
     }
 }
