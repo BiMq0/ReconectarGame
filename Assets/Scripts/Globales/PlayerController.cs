@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
@@ -13,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [Header("Acciones")]
     private InputAction movementAction;
     private InputAction jumpAction;
+    private InputAction interactAction; // Para iniciar el diálogo/interacción
+    private InputAction dialogueAdvanceAction; // Para avanzar/saltar el diálogo (NUEVO)
 
     [Header("Componentes")]
     public InputActionAsset playerActions;
@@ -27,8 +30,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        playerActions.FindActionMap("Player").Enable();
         GameManager.CambioEstadoControles += HandleCambioControles;
+        playerActions.FindActionMap("Player").Enable();
     }
 
     private void OnDisable()
@@ -53,12 +56,11 @@ public class PlayerController : MonoBehaviour
         movementAction = playerActions.FindActionMap("Player").FindAction("Movimiento");
         jumpAction = playerActions.FindActionMap("Player").FindAction("Salto");
 
+        interactAction = playerActions.FindActionMap("Player").FindAction("Interactuar");
+        dialogueAdvanceAction = playerActions.FindActionMap("Player").FindAction("SaltarDialogo");
+
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-
-        // Lee el estado actual del GameManager al inicio
-        // Aseg�rate de que GameManager.IsCinematicActive exista en tu GameManager.cs
-        // isInputBlocked = GameManager.IsCinematicActive; 
     }
 
     private void HandleCambioControles(bool isBlocked)
@@ -69,10 +71,20 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             animator.SetFloat("speed", 0f);
-            playerActions.FindActionMap("Player").Disable();
+
+            movementAction.Disable();
+            jumpAction.Disable();
+            if (interactAction != null) interactAction.Disable();
+
+            if (dialogueAdvanceAction != null) dialogueAdvanceAction.Enable();
+
         }
         else
         {
+            movementAction.Enable();
+            jumpAction.Enable();
+            if (interactAction != null) interactAction.Enable();
+
             playerActions.FindActionMap("Player").Enable();
         }
     }
@@ -117,11 +129,10 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        if (!IsGrounded()) return;
         rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
     }
     private bool IsGrounded()
     {
-        return rb.velocity.y <= 0.1f;
+        return true;
     }
 }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    // Evento que notifica al PlayerController el cambio de estado de controles
     public static event Action<bool> CambioEstadoControles;
     public static bool IsEventActive { get; private set; } = false;
 
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            ClearSavedData();
+            ClearSavedData(); // Descomentar solo si estás en desarrollo
             LoadGame();
         }
         else
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
             return;
 
         IsEventActive = isActive;
+        // La clave: invocar el evento para que PlayerController actúe
         CambioEstadoControles?.Invoke(isActive);
     }
 
@@ -63,7 +65,6 @@ public class GameManager : MonoBehaviour
     // MÉTODOS DE PERSISTENCIA DE DECISIONES (VALORES)
     // =============================================================
 
-    // Guarda la decisión (un entero) asociada a un EventID.
     public void SaveDecision(string eventID, int choiceValue)
     {
         string key = eventID + "_DECISION";
@@ -72,12 +73,13 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Decisión '{choiceValue}' guardada para el evento '{eventID}'.");
     }
 
-    // Carga la decisión (un entero). Retorna 0 si no se encuentra.
     public int LoadDecision(string eventID)
     {
         string key = eventID + "_DECISION";
-        return PlayerPrefs.GetInt(key, 0); 
+        return PlayerPrefs.GetInt(key, 0);
     }
+
+    // ... (Métodos de guardado y carga completos)
     public void SaveGame()
     {
         string serializedEvents = string.Join(Separator.ToString(), completedEvents);
