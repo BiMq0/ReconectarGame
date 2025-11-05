@@ -846,6 +846,10 @@ MonoBehaviour:
   - {fileID: 76407552}
   - {fileID: 1149666173}
   - {fileID: 1985960256}
+  explosionAnimationName: perroexplosion
+  OnDogExplode:
+    m_PersistentCalls:
+      m_Calls: []
   attackCount: 0
 --- !u!61 &871452886
 BoxCollider2D:

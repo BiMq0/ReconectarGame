@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // Evento que notifica al PlayerController el cambio de estado de controles
     public static event Action<bool> CambioEstadoControles;
     public static bool IsEventActive { get; private set; } = false;
 

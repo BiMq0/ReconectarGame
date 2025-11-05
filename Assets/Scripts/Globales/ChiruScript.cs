@@ -1,58 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class ChiruScript : MonoBehaviour
+public class ChiruController : MonoBehaviour
 {
+    [Header("Movimiento")]
+    [SerializeField] private float speed = 10f; 
+
+    [Header("Componentes")]
     private Animator animator;
-    private Vector2 movementInput;
-
-    [Header("Velocidad")]
-    [SerializeField] private float speed = 300f;
-
     private Rigidbody2D rb;
 
-    private void Start()
+    private Vector2 movementInput;
+
+    private void Awake()
     {
-        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
-
-    private void Update()
-    {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-
-        movementInput = new Vector2(horizontal, vertical).normalized;
-
-        if (movementInput.magnitude > 0)
-        {
-            PlayAnimationByDirection(horizontal, vertical);
-        }
-    }
-
     private void FixedUpdate()
     {
         rb.velocity = movementInput * speed;
     }
 
-    private void PlayAnimationByDirection(float horizontal, float vertical)
+    public void MoveCharacter(InputAction.CallbackContext context)
     {
-        if (vertical > 0)
+
+        animator.SetBool("isWalking", true);
+        if (context.canceled)
         {
-            animator.SetTrigger("chiruBackward");
+            animator.SetBool("isWalking", false);
+            animator.SetFloat("LastInputX", movementInput.x);
+            animator.SetFloat("LastInputY", movementInput.y);
         }
-        else if (vertical < 0)
-        {
-            animator.SetTrigger("chiruForward");
-        }
-        else if (horizontal != 0)
-        {
-            animator.SetTrigger("chiruLado");
-        }
-        else
-        {
-            animator.SetTrigger("chiruIdle");
-        }
+        movementInput = context.ReadValue<Vector2>();
+        animator.SetFloat("InputX", movementInput.x);
+        animator.SetFloat("InputY",movementInput.y);
     }
+   
 }

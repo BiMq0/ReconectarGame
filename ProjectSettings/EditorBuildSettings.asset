@@ -21,4 +21,5 @@ EditorBuildSettings:
     path: Assets/Scenes/NV_1/NV_1.unity
     guid: e4cc272ca42ec8c438f1cada738be8c8
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: e56e179ceddee044dbf9cb24ce6b5b4c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 68667ad20de362144af4eb8c80a54551, type: 3}
