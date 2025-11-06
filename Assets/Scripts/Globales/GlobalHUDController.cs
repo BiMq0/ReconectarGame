@@ -13,6 +13,15 @@ public class GlobalHUDController : MonoBehaviour
 
     private void Awake()
     {
+        if (FindObjectsOfType<GlobalHUDController>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
         if (pauseMenuCanvas != null)
             pauseMenuCanvas.gameObject.SetActive(false);
         if (inventoryCanvas != null)
@@ -58,7 +67,7 @@ public class GlobalHUDController : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        Time.timeScale = 1f; // Reanudar tiempo antes de cambiar escena
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenuScene");
         Debug.Log("Ir al menú principal");
     }
