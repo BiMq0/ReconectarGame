@@ -846,7 +846,7 @@ MonoBehaviour:
   - {fileID: 76407552}
   - {fileID: 1149666173}
   - {fileID: 1985960256}
-  explosionAnimationName: perroexplosion
+  explosionAnimationName: perroAustriaco
   OnDogExplode:
     m_PersistentCalls:
       m_Calls: []

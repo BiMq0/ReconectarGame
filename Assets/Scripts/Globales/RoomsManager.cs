@@ -123,12 +123,34 @@ public class RoomsManager : MonoBehaviour
             yield return null;
         }
 
-        TeleportPlayerToEntrance();
-        ReEngageCinemachine();
+        if (GameManager.IsLoadingGame)
+        {
+            TeleportPlayerToSavedPosition();
+            GameManager.SetIsLoadingGame(false);
+        }
+        else
+        {
+            TeleportPlayerToEntrance();
+        }
+
+        ReEngageCinemachine(true);
 
         if (transitionManager != null) yield return transitionManager.StartCoroutine(transitionManager.FadeOut());
 
         if (GameManager.Instance != null) GameManager.Instance.SetCinematicMode(false);
+    }
+    private void TeleportPlayerToSavedPosition()
+    {
+        if (playerTransform != null && GameManager.Instance != null)
+        {
+            Vector3 savedPos = GameManager.Instance.GetSavedPlayerPosition();
+            playerTransform.position = savedPos;
+            Debug.Log($"Carga de Partida: Teleportado a la posición guardada: {savedPos}.");
+        }
+        else
+        {
+            Debug.LogError("No se pudo teleportar al jugador a la posición guardada.");
+        }
     }
 
     // --- TeleportPlayerToEntrance (Se mantiene igual) ---
@@ -149,12 +171,18 @@ public class RoomsManager : MonoBehaviour
         }
     }
 
-    private void ReEngageCinemachine()
+    private void ReEngageCinemachine(bool warpCamera)
     {
         CinemachineVirtualCamera vCam = FindObjectOfType<CinemachineVirtualCamera>();
         if (vCam != null && playerTransform != null)
         {
             vCam.Follow = playerTransform;
+
+            if (warpCamera)
+            {
+                vCam.OnTargetObjectWarped(playerTransform, Vector3.zero);
+                Debug.Log("Cinemachine: Warp forzado a la nueva posición.");
+            }
         }
     }
 

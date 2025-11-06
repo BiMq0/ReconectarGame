@@ -9,7 +9,7 @@ public class KidEvent : MonoBehaviour
     // =============================================================
     // ESTRUCTURAS DE DATOS
     // =============================================================
-    public enum Speaker { NPC = 0, Player = 1, Decision = -1 }
+    public enum Speaker { NPC = 0, Raymi = 1, Decision = -1 }
 
     [System.Serializable]
     public class DialogueLine
@@ -183,7 +183,7 @@ public class KidEvent : MonoBehaviour
 
     private IEnumerator TypeAndAdvance(DialogueLine line)
     {
-        string speakerPrefix = line.speaker == Speaker.NPC ? "Niño: " : "Player: ";
+        string speakerPrefix = line.speaker == Speaker.NPC ? "Niño: " : "Raymi: ";
         string fullText = speakerPrefix + line.text;
 
         if (dialogueAdvanceAction == null)

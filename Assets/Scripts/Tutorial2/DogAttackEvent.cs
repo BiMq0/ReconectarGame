@@ -15,7 +15,7 @@ public class DogAttackEvent : MonoBehaviour
     [SerializeField] public GameObject[] knifes = new GameObject[3];
 
     [Header("Explosión")]
-    [SerializeField] public string explosionAnimationName = "perroexplosion";
+    [SerializeField] public string explosionAnimationName = "perroAustriaco";
     public UnityEvent OnDogExplode;
 
     private Coroutine attackCoroutine;

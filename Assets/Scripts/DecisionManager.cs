@@ -66,7 +66,6 @@ public class DecisionManager : MonoBehaviour
 
             if (i < dialogueOptions.Length)
             {
-                // *** CORRECCIÓN PARA TEXTMESHPRO ***
                 TextMeshProUGUI buttonText = choiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText != null)
                 {
@@ -76,8 +75,6 @@ public class DecisionManager : MonoBehaviour
                 {
                     Debug.LogWarning($"El botón {i} no tiene un componente TextMeshProUGUI hijo.");
                 }
-                // **********************************
-
                 choiceButtons[i].gameObject.SetActive(true);
             }
             else

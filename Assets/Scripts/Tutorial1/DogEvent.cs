@@ -9,6 +9,7 @@ public class DogEvent : MonoBehaviour
     public string eventID = "PERRO_GETUP_EVENT";
 
     [Tooltip("Duración de la cinemática o espera.")]
+    public float dialogueSpawn = 2f;
     public float eventDuration = 3.0f;
 
     [Header("Referencias de la Escena")]
@@ -19,7 +20,8 @@ public class DogEvent : MonoBehaviour
     public Animator dogAnimator;
 
     private Collider2D triggerCollider;
-
+    public TutorialEventsManager tutoManager;
+    private bool dogAnimationFinished = false;
     void Awake()
     {
         triggerCollider = GetComponent<Collider2D>();
@@ -51,7 +53,7 @@ public class DogEvent : MonoBehaviour
             {
                 triggerCollider.enabled = false;
             }
-
+            tutoManager.ActivarDialogo();
             ExecuteEventSequence();
         }
     }
@@ -61,20 +63,26 @@ public class DogEvent : MonoBehaviour
         if (GameManager.Instance == null) return;
 
         GameManager.Instance.SetCinematicMode(true);
+        dogAnimationFinished = false;
 
         if (dogAnimator != null)
         {
             dogAnimator.SetBool("isActive", true);
         }
-
         StartCoroutine(DogEventSecuence());
+    }
+    public void OnDogAnimationEnd()
+    {
+        Debug.Log("DEBUG: Evento de Animación del perro ha terminado.");
+        dogAnimationFinished = true;
     }
 
     private IEnumerator DogEventSecuence()
     {
         Debug.Log("DEBUG: Inicio de la cinemática del perro.");
 
-        yield return new WaitForSeconds(eventDuration);
+        yield return new WaitUntil(() => dogAnimationFinished);
+
 
         if (dogObject != null)
         {
