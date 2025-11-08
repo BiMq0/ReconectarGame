@@ -1898,7 +1898,7 @@ MonoBehaviour:
     text: Damn!!
     iconIndex: 1
   dialogueLinesAfterAttack:
-  - speaker: 0
+  - speaker: 1
     text: "Tu mam\xE1 es hombre y me gusta..."
     iconIndex: 0
   typeSpeed: 0.05
