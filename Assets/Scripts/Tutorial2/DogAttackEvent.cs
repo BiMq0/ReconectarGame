@@ -19,13 +19,16 @@ public class DogAttackEvent : MonoBehaviour
     public UnityEvent OnDogExplode;
 
     private Coroutine attackCoroutine;
-    [SerializeField] private int attackCount = 0;
+    [SerializeField] public int attackCount = 0;
     private Transform playerTransform;
     private KnifeProjectile[] knifeProjectiles;
 
     public void Awake()
     {
+        Debug.Log("[DogAttackEvent] Awake() iniciado", this);
+
         animator = GetComponent<Animator>();
+        Debug.Log($"[DogAttackEvent] ¿Animator encontrado? {animator != null}", this);
 
         // Obtener los componentes KnifeProjectile de los cuchillos
         knifeProjectiles = new KnifeProjectile[knifes.Length];
@@ -36,13 +39,17 @@ public class DogAttackEvent : MonoBehaviour
                 knifeProjectiles[i] = knifes[i].GetComponent<KnifeProjectile>();
                 if (knifeProjectiles[i] == null)
                 {
-                    Debug.LogError($"Cuchillo {i} no tiene componente KnifeProjectile");
+                    Debug.LogError($"[DogAttackEvent] Cuchillo {i} no tiene componente KnifeProjectile", this);
+                }
+                else
+                {
+                    Debug.Log($"[DogAttackEvent] Cuchillo {i} listo", this);
                 }
                 knifes[i].SetActive(false);
             }
             else
             {
-                Debug.LogError($"Cuchillo {i} no asignado en el array");
+                Debug.LogError($"[DogAttackEvent] Cuchillo {i} no asignado en el array", this);
             }
         }
 
@@ -50,43 +57,88 @@ public class DogAttackEvent : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
         if (playerTransform == null)
         {
-            Debug.LogError("Player no encontrado. Asegúrate de que tiene el tag 'Player'");
+            Debug.LogError("[DogAttackEvent] ¡¡¡ CRITICO: Player no encontrado. Asegúrate de que tiene el tag 'Player' !!!", this);
         }
+        else
+        {
+            Debug.Log($"[DogAttackEvent] Player encontrado: {playerTransform.gameObject.name}", this);
+        }
+
+        Debug.Log("[DogAttackEvent] Awake() completado", this);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        Debug.Log($"[DogAttackEvent] OnTriggerEnter2D detectado: {other.gameObject.name}, Tag: {other.tag}", this);
+
+        // ===== DEBUG: Verificar condiciones =====
+        Debug.Log($"[DogAttackEvent] ¿CompareTag('Player')? {other.CompareTag("Player")}", this);
+        Debug.Log($"[DogAttackEvent] ¿GameManager.IsEventActive? {GameManager.IsEventActive}", this);
+        Debug.Log($"[DogAttackEvent] ¿Este script enabled? {enabled}", this);
+        Debug.Log($"[DogAttackEvent] Combinación de condiciones: {other.CompareTag("Player") && !GameManager.IsEventActive && enabled}", this);
+        // ==========================================
+
+        if (other.CompareTag("Player") && !GameManager.IsEventActive && enabled)
         {
-            Console.WriteLine("Dog attack triggered!");
-            animator.SetBool("isPlayerInScene", true);
-            StartAttackSequence();
+            Debug.Log("[DogAttackEvent] ¡¡¡ DOG ATTACK TRIGGERED !!!", this);
+
+            // Activar el evento de diálogo
+            DialogosEventDogAttack dialogEvent = GetComponentInChildren<DialogosEventDogAttack>();
+            Debug.Log($"[DogAttackEvent] ¿DialogosEventDogAttack encontrado? {dialogEvent != null}", this);
+
+            if (dialogEvent != null)
+            {
+                Debug.Log("[DogAttackEvent] Llamando StartDogAttackEvent()...", this);
+                dialogEvent.StartDogAttackEvent();
+            }
+            else
+            {
+                Debug.LogError("[DogAttackEvent] DialogosEventDogAttack NO ENCONTRADO en el GameObject", this);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[DogAttackEvent] Colisión no procesada porque una condición falló", this);
+            if (!other.CompareTag("Player"))
+                Debug.LogWarning($"[DogAttackEvent] - No es Player: {other.tag}", this);
+            if (GameManager.IsEventActive)
+                Debug.LogWarning($"[DogAttackEvent] - Evento ya activo", this);
+            if (!enabled)
+                Debug.LogWarning($"[DogAttackEvent] - Script deshabilitado", this);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log($"[DogAttackEvent] OnTriggerExit2D detectado: {other.gameObject.name}", this);
+
         if (other.CompareTag("Player"))
         {
-            Console.WriteLine("Dog attack ended!");
+            Debug.Log("[DogAttackEvent] Jugador salió del área de ataque del perro", this);
             animator.SetBool("isPlayerInScene", false);
             StopAttackSequence();
         }
     }
 
-    private void StartAttackSequence()
+    public void StartAttackSequence()
     {
+        Debug.Log("[DogAttackEvent] StartAttackSequence() llamado", this);
+
         if (attackCoroutine != null)
         {
+            Debug.LogWarning("[DogAttackEvent] Deteniendo corrutina de ataque anterior", this);
             StopCoroutine(attackCoroutine);
         }
         attackCoroutine = StartCoroutine(AttackLoopWithDelay());
     }
 
-    private void StopAttackSequence()
+    public void StopAttackSequence()
     {
+        Debug.Log("[DogAttackEvent] StopAttackSequence() llamado", this);
+
         if (attackCoroutine != null)
         {
+            Debug.Log("[DogAttackEvent] Deteniendo secuencia de ataques", this);
             StopCoroutine(attackCoroutine);
             attackCoroutine = null;
         }
@@ -94,32 +146,49 @@ public class DogAttackEvent : MonoBehaviour
 
     private IEnumerator AttackLoopWithDelay()
     {
+        Debug.Log("[DogAttackEvent] AttackLoopWithDelay() iniciado", this);
         attackCount = 0;
 
         while (attackCount < maxAttackRepetitions && animator.GetBool("isPlayerInScene"))
         {
             attackCount++;
-            Debug.Log($"Iniciando ataque #{attackCount}/{maxAttackRepetitions}");
+            Debug.Log($"[DogAttackEvent] ========== INICIANDO ATAQUE #{attackCount}/{maxAttackRepetitions} ==========", this);
 
             animator.SetBool("Lanzar", true);
+            Debug.Log($"[DogAttackEvent] SetBool('Lanzar', true)", this);
 
-            yield return new WaitForSeconds(GetAnimationClipDuration(animationStateName));
+            float animDuration = GetAnimationClipDuration(animationStateName);
+            Debug.Log($"[DogAttackEvent] Duración de animación '{animationStateName}': {animDuration}s", this);
 
-            Debug.Log($"Ataque #{attackCount} completado");
+            yield return new WaitForSeconds(animDuration);
+
+            Debug.Log($"[DogAttackEvent] Ataque #{attackCount} completado - Lanzando cuchillo", this);
 
             if (playerTransform != null && attackCount <= knifes.Length)
             {
                 LaunchKnife(attackCount - 1);
             }
+            else
+            {
+                Debug.LogWarning($"[DogAttackEvent] No se pudo lanzar cuchillo. PlayerTransform: {playerTransform != null}, AttackCount: {attackCount}, KnifesLength: {knifes.Length}", this);
+            }
 
             animator.SetBool("Lanzar", false);
+            Debug.Log($"[DogAttackEvent] SetBool('Lanzar', false)", this);
 
-            // Esperar a que realmente transicione a perroalterao
-            yield return new WaitUntil(() => IsInState("perroalterao"));
+            // Esperar transición o timeout de 0.5 segundos
+            float transitionWait = 0f;
+            while (transitionWait < 0.5f && !IsInState("perroalterao"))
+            {
+                transitionWait += Time.deltaTime;
+                yield return null;
+            }
+
+            Debug.Log($"[DogAttackEvent] Transición completada en {transitionWait}s", this);
 
             if (attackCount < maxAttackRepetitions && animator.GetBool("isPlayerInScene"))
             {
-                Debug.Log($"Esperando {delayEntreAtaques} segundos antes del próximo ataque");
+                Debug.Log($"[DogAttackEvent] Esperando {delayEntreAtaques}s antes del próximo ataque...", this);
                 yield return new WaitForSeconds(delayEntreAtaques);
             }
         }
@@ -129,18 +198,21 @@ public class DogAttackEvent : MonoBehaviour
 
         if (attackCount >= maxAttackRepetitions)
         {
-            Debug.Log("¡El perro explota!");
-            yield return new WaitForSeconds(delayEntreAtaques);
+            Debug.Log("[DogAttackEvent] !!!!!!!! EL PERRO EXPLOTA - CONTADOR EN 3 !!!!!!!!", this);
 
             OnDogExplode?.Invoke();
             animator.SetTrigger("Explotar");
 
-            yield return new WaitForSeconds(GetAnimationClipDuration(explosionAnimationName));
+            float explosionDuration = GetAnimationClipDuration(explosionAnimationName);
+            Debug.Log($"[DogAttackEvent] Duración de explosión: {explosionDuration}s", this);
 
+            yield return new WaitForSeconds(explosionDuration);
+
+            Debug.Log("[DogAttackEvent] Desactivando GameObject del perro", this);
             gameObject.SetActive(false);
         }
 
-        Debug.Log("Secuencia de ataques completada");
+        Debug.Log("[DogAttackEvent] Secuencia de ataques completada", this);
     }
     private void LaunchKnife(int knifeIndex)
     {
@@ -150,7 +222,7 @@ public class DogAttackEvent : MonoBehaviour
             return;
         }
 
-        knifeProjectiles[knifeIndex].LaunchTowards(playerTransform.position);
+        knifeProjectiles[knifeIndex].LaunchTowards(playerTransform);
         Debug.Log($"Cuchillo #{knifeIndex + 1} lanzado hacia el jugador");
     }
 
