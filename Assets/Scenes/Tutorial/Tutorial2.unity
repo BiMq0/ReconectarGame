@@ -1883,8 +1883,8 @@ MonoBehaviour:
   dialogueText: {fileID: 140266408}
   icon: {fileID: 140266407}
   caras:
-  - {fileID: 21300000, guid: ed7f71b3b95ae0d499310085a01051b2, type: 3}
   - {fileID: 21300000, guid: 6159e52a91c6bfb47a009df6264963e0, type: 3}
+  - {fileID: 21300000, guid: ed7f71b3b95ae0d499310085a01051b2, type: 3}
   dialogueLinesBeforeAttack:
   - speaker: 1
     text: Salaverga
