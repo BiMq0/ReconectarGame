@@ -1627,16 +1627,16 @@ MonoBehaviour:
   dialogueManager: {fileID: 442068466}
   introductionDialogue:
   - speaker: 0
-    text: Malas vibras...
+    text: ... Si... Malas vibras...
     expressionIndex: 0
   - speaker: 1
-    text: "Eh? A qu\xE9 se refiere con eso?"
+    text: Eh? Me habla a mi?
     expressionIndex: 1
   - speaker: 0
-    text: 'MALAS VIBRAS W, ENTRA ENTRA '
+    text: 'SI. TIENES MALAS VIBRAS W. ENTRA ENTRA '
     expressionIndex: 0
   - speaker: 1
-    text: De acuerdo de acuerdo!
+    text: De acuerdo, de acuerdo!
     expressionIndex: 1
   - speaker: 1
     text: Debo acercarme y presionar "E" para entrar..
@@ -1646,16 +1646,16 @@ MonoBehaviour:
     text: "EST\xC1S MALDITOO!"
     expressionIndex: 0
   - speaker: 1
-    text: "QU\xC9??"
+    text: QUIEN YO?
     expressionIndex: 1
   - speaker: 0
-    text: "Algo viene sigui\xE9ndote desde hace un tiempo"
+    text: "Asi es. Algo viene sigui\xE9ndote desde hace un tiempo"
     expressionIndex: 0
   - speaker: 0
-    text: "Un alma en pena est\xE1 llam\xE1ndote"
+    text: "Un alma en pena est\xE1 llam\xE1ndote!"
     expressionIndex: 0
   - speaker: 1
-    text: "(Qu\xE9? No estar\xE1 hablando de..)"
+    text: "(Qu\xE9? No mas amarres por favor... A menos que...)"
     expressionIndex: 1
   - speaker: 1
     text: "Y c\xF3mo resuelvo esto? C\xF3mo hago para que el alma descanse??"
@@ -1680,7 +1680,7 @@ MonoBehaviour:
     text: 'De acuerdo, muchas gracias!! '
     expressionIndex: 1
   - speaker: 1
-    text: "Chiru... De verdad sigues aqu\xED?"
+    text: "Talves... Chiru... De verdad sigues aqu\xED?"
     expressionIndex: 1
 --- !u!61 &1969044132
 BoxCollider2D:
