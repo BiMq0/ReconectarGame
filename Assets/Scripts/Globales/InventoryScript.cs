@@ -16,7 +16,7 @@ public class InventoryScript : MonoBehaviour
         }
 
         instance = this;
-        DontDestroyOnLoad(gameObject); 
+        DontDestroyOnLoad(gameObject);
     }
 
     public static InventoryScript Instance => instance;
@@ -30,7 +30,7 @@ public class InventoryScript : MonoBehaviour
         }
         else
         {
-            Debug.Log($"El item '{nombreItem}' ya está en el inventario, esta vaina no deberia pasar porque los items desaparecen xd");
+            Debug.Log($"El item '{nombreItem}' ya está en el inventario, esta vaina no deberia pasar porque los items desaparecen o se usan una unica vez xd");
         }
     }
 

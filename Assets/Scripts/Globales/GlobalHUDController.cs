@@ -19,6 +19,7 @@ public class GlobalHUDController : MonoBehaviour
         }
         else
         {
+
             DontDestroyOnLoad(gameObject);
         }
 
