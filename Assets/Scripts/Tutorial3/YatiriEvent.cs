@@ -132,7 +132,7 @@ public class YatiriEvent : MonoBehaviour
         }
         if (panelYatiri != null) panelYatiri.SetActive(true);
         yield return RoomsManager.Instance.transitionManager.StartCoroutine(RoomsManager.Instance.transitionManager.FadeOut());
-
+        MusicManager.PlayBGM("yatiri",false);
         if (dialogueManager != null)
         {
             dialogueManager.StartDialogue(interactionDialogue, true, OnInteractionDialogueFinished);

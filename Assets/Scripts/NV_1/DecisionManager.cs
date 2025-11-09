@@ -13,10 +13,8 @@ public class DecisionManager : MonoBehaviour
 
     private void Awake()
     {
-        // Implementación de Singleton para acceso estático en la escena
         if (Instance != null && Instance != this)
         {
-            // Destruye si ya existe otra instancia
             Destroy(gameObject);
         }
         else
@@ -24,6 +22,7 @@ public class DecisionManager : MonoBehaviour
             Instance = this;
             // NOTA: Se ha quitado DontDestroyOnLoad() según tu petición.
         }
+        MusicManager.PlayBGM("mercado",false);
     }
 
     // =============================================================

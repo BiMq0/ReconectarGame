@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            //ClearSavedData(); // Descomentar solo si estás en desarrollo
+            ClearSavedData(); // Descomentar solo si estás en desarrollo
             LoadGame();
         }
         else
@@ -223,7 +223,10 @@ public class GameManager : MonoBehaviour
         Debug.Log("Datos de eventos, decisiones y escena borrados.");
     }
 
-
+    public bool DoesSaveGameExist()
+    {
+        return PlayerPrefs.HasKey(SceneSaveKey);
+    }
     // NUEVO MÉTODO para que RoomsManager pueda resetear el estado de carga.
     public static void SetIsLoadingGame(bool isLoading)
     {

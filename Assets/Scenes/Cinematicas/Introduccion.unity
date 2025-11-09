@@ -939,7 +939,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: c0d724fcd2e12544f903548ad0e15571, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.624
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1469,8 +1469,8 @@ Camera:
   m_GameObject: {fileID: 757351418}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2739,7 +2739,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skipButton: {fileID: 830816207}
-  tutorialSceneName: TutorialScene
+  tutorialSceneName: Tutorial
   mainMenuSceneName: MainMenuScene
   cinematicDuration: 60
 --- !u!1001 &1671715454
@@ -2754,6 +2754,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4816490258202576010, guid: 7bad7fae2d8ac0a42b249adc3365bf47, type: 3}
+      propertyPath: soundEffectGroups.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816490258202576010, guid: 7bad7fae2d8ac0a42b249adc3365bf47, type: 3}
+      propertyPath: soundEffectGroups.Array.data[3].name
+      value: Viento
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816490258202576010, guid: 7bad7fae2d8ac0a42b249adc3365bf47, type: 3}
+      propertyPath: soundEffectGroups.Array.data[3].audioClips.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4816490258202576010, guid: 7bad7fae2d8ac0a42b249adc3365bf47, type: 3}
+      propertyPath: soundEffectGroups.Array.data[3].audioClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 2ecf69f2373ecf446b7762e6534396f2, type: 3}
     - target: {fileID: 5322096989940329389, guid: 7bad7fae2d8ac0a42b249adc3365bf47, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.2359147
@@ -3109,32 +3125,36 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
+      propertyPath: musicList.Array.data[0].id
+      value: mainmenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[1].id
-      value: 2
+      value: tutorial
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[2].id
-      value: 3
+      value: pelea
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[3].id
-      value: 4
+      value: yatiri
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[4].id
-      value: 5
+      value: mercado
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[5].id
-      value: 6
+      value: jugo
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[6].id
-      value: 7
+      value: chiru
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[7].id
-      value: 9
+      value: final
       objectReference: {fileID: 0}
     - target: {fileID: 2022196009652963727, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: musicList.Array.data[8].id
@@ -3176,6 +3196,10 @@ PrefabInstance:
       propertyPath: musicList.Array.data[8].clip
       value: 
       objectReference: {fileID: 8300000, guid: 3b32034c6f724aa4e8464ddc8a05168f, type: 3}
+    - target: {fileID: 3126610520421657531, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
+      propertyPath: m_Volume
+      value: 0.584
+      objectReference: {fileID: 0}
     - target: {fileID: 6495109683170026102, guid: 1f3f1e2fb7406be4dad6077f81d19223, type: 3}
       propertyPath: m_Name
       value: MusicManager

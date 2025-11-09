@@ -128,7 +128,7 @@ public class JugoEventManager : MonoBehaviour
         GameManager.Instance.SetCinematicMode(true);
 
         if (interactionIndicator != null) interactionIndicator.SetActive(false);
-
+        MusicManager.PlayBGM("jugo",false);
         panelJugo.SetActive(true);
         currentProgressClicks = 0;
         isAwaitingInput = false;
@@ -293,7 +293,7 @@ public class JugoEventManager : MonoBehaviour
 
             GameManager.Instance.MarkEventCompleted(eventID);
             eventCompleted = true;
-
+            MusicManager.PlayBGM("mercado",true);
             if (panelJugo != null) panelJugo.SetActive(false);
             dialogueManager.dialoguePanel.SetActive(false);
             

@@ -38,6 +38,7 @@ public class TutorialEventsManager : MonoBehaviour
     private void Awake()
     {
         Transition_Manager.Instance.FadeOut();
+        MusicManager.PlayBGM("tutorial",false);
     }
     public void ActivarDialogo()
     {

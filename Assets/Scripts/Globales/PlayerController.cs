@@ -26,8 +26,8 @@ public class PlayerController : MonoBehaviour
     bool isFacingRight = true;
     private bool isInputBlocked = false;
 
-    private static PlayerController Instance;
-
+    // Esto hace que la instancia sea accesible estáticamente (PlayerController.Instance)
+    public static PlayerController Instance { get; private set; }
     private void OnEnable()
     {
         GameManager.CambioEstadoControles += HandleCambioControles;
