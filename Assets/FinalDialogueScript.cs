@@ -80,7 +80,6 @@ public class FinalDialogueScript : MonoBehaviour
     {
         if (fadeImage == null)
         {
-            Debug.LogWarning("[FinalDialogueScript] fadeImage no asignado");
             yield break;
         }
 
@@ -101,7 +100,6 @@ public class FinalDialogueScript : MonoBehaviour
         }
 
         fadeImage.color = endColor;
-        Debug.Log($"[FinalDialogueScript] Fade {(fadeIn ? "IN" : "OUT")} completado");
     }
     private IEnumerator TypeText(string text)
     {
