@@ -42,9 +42,9 @@ public class DialogosEventDogAttack : MonoBehaviour
         dogAttackEvent = GetComponentInParent<DogAttackEvent>();
     }
 
-    public void StartDogAttackEvent()
+    public Coroutine StartDogAttackEvent()
     {
-        StartCoroutine(DogAttackEventSequence());
+        return StartCoroutine(DogAttackEventSequence());
     }
 
     private IEnumerator DogAttackEventSequence()
@@ -78,6 +78,7 @@ public class DialogosEventDogAttack : MonoBehaviour
         }
 
         Debug.Log("Evento de perro completado");
+        // La corrutina termina aquí sin destruir nada
     }
 
     private IEnumerator RunDialogue(DialogueLine[] lines)

@@ -22,6 +22,7 @@ public class DogAttackEvent : MonoBehaviour
     [SerializeField] public int attackCount = 0;
     private Transform playerTransform;
     private KnifeProjectile[] knifeProjectiles;
+    private Coroutine dialogueCoroutine;
 
     public void Awake()
     {
@@ -89,7 +90,7 @@ public class DogAttackEvent : MonoBehaviour
             if (dialogEvent != null)
             {
                 Debug.Log("[DogAttackEvent] Llamando StartDogAttackEvent()...", this);
-                dialogEvent.StartDogAttackEvent();
+                dialogueCoroutine = dialogEvent.StartDogAttackEvent();
             }
             else
             {
@@ -207,6 +208,13 @@ public class DogAttackEvent : MonoBehaviour
             Debug.Log($"[DogAttackEvent] Duración de explosión: {explosionDuration}s", this);
 
             yield return new WaitForSeconds(explosionDuration);
+
+            // Esperar a que la corrutina de diálogos termine
+            if (dialogueCoroutine != null)
+            {
+                Debug.Log("[DogAttackEvent] Esperando a que la corrutina de diálogos termine...", this);
+                yield return dialogueCoroutine;
+            }
 
             Debug.Log("[DogAttackEvent] Desactivando GameObject del perro", this);
             gameObject.SetActive(false);
