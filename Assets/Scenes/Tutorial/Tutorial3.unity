@@ -246,7 +246,7 @@ MonoBehaviour:
   carasNPC:
   - {fileID: 21300000, guid: 174941908e366ad4f8bec9da018686d4, type: 3}
   - {fileID: 21300000, guid: ed7f71b3b95ae0d499310085a01051b2, type: 3}
-  typeSpeed: 0.05
+  typeSpeed: 0.01
   autoPauseDuration: 1.5
 --- !u!4 &442068467
 Transform:
