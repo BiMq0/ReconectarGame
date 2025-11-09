@@ -46,33 +46,26 @@ public class FinalDialogueScript : MonoBehaviour
     private IEnumerator DisplayDialogueSequence()
     {
         isDisplaying = true;
-        Debug.Log("[FinalDialogueScript] Iniciando secuencia de diálogos");
 
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(true);
-            Debug.Log("[FinalDialogueScript] Panel activado");
         }
         else
         {
-            Debug.LogError("[FinalDialogueScript] dialoguePanel es null");
             yield break;
         }
 
         // Fade in una sola vez al inicio
-        Debug.Log("[FinalDialogueScript] Iniciando fade in");
         yield return StartCoroutine(FadeImage(true, fadeDuration));
 
         // Mostrar cada línea de texto por click
         foreach (DialogueLine line in dialogueLines)
         {
-            Debug.Log($"[FinalDialogueScript] Mostrando línea: {line.text.Substring(0, Mathf.Min(30, line.text.Length))}...");
-
             yield return StartCoroutine(TypeAndAdvance(line));
         }
 
         // Fade out al final
-        Debug.Log("[FinalDialogueScript] Iniciando fade out");
         yield return StartCoroutine(FadeImage(false, fadeDuration));
 
         if (dialoguePanel != null)
@@ -81,7 +74,6 @@ public class FinalDialogueScript : MonoBehaviour
         }
 
         isDisplaying = false;
-        Debug.Log("[FinalDialogueScript] Diálogos completados");
     }
 
     private IEnumerator FadeImage(bool fadeIn, float duration)
