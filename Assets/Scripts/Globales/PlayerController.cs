@@ -94,11 +94,6 @@ public class PlayerController : MonoBehaviour
         if (isInputBlocked) return;
 
         movementInput = movementAction.ReadValue<Vector2>();
-
-        if (jumpAction.WasPressedThisFrame() && IsGrounded())
-        {
-            // Jump();
-        }
     }
     private void FixedUpdate()
     {
@@ -125,14 +120,5 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("speed", Math.Abs(movementInput.x));
         Vector2 velocity = new Vector2(movementInput.x * WalkSpeed, rb.velocity.y);
         rb.velocity = velocity;
-    }
-
-    private void Jump()
-    {
-        rb.AddForce(Vector2.up * JumpSpeed, ForceMode2D.Impulse);
-    }
-    private bool IsGrounded()
-    {
-        return true;
     }
 }
