@@ -13,6 +13,7 @@ public class FinalDialogueScript : MonoBehaviour
         public string text;
     }
 
+    // esto es por el commit que no se subio krjo
     [Header("═══ REFERENCIAS UI ═══")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
