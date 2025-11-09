@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class ChiruController : MonoBehaviour
 {
     [Header("Movimiento")]
-    [SerializeField] private float speed = 10f; 
+    [SerializeField] private float speed = 15f; 
 
     [Header("Componentes")]
     private Animator animator;
