@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -114,23 +115,29 @@ public class YatiriEvent : MonoBehaviour
     {
         if (playerIsInRange && introDialogueFinished && interactAction != null && interactAction.WasPressedThisFrame())
         {
-            ExecuteInteractionEvent();
+            StartCoroutine(ExecuteInteractionEventSequence());
         }
     }
-    private void ExecuteInteractionEvent()
+
+    private IEnumerator ExecuteInteractionEventSequence()
     {
-        if (GameManager.Instance == null || GameManager.IsEventActive) return;
+        if (GameManager.Instance == null || GameManager.IsEventActive) yield break;
 
         GameManager.Instance.SetCinematicMode(true);
         if (interactionIndicator != null) interactionIndicator.SetActive(false);
+
+        if (RoomsManager.Instance != null && RoomsManager.Instance.transitionManager != null)
+        {
+            yield return RoomsManager.Instance.transitionManager.StartCoroutine(RoomsManager.Instance.transitionManager.FadeIn());
+        }
         if (panelYatiri != null) panelYatiri.SetActive(true);
+        yield return RoomsManager.Instance.transitionManager.StartCoroutine(RoomsManager.Instance.transitionManager.FadeOut());
 
         if (dialogueManager != null)
         {
             dialogueManager.StartDialogue(interactionDialogue, true, OnInteractionDialogueFinished);
         }
     }
-
     private void OnInteractionDialogueFinished()
     {
         Debug.Log("DEBUG: El diálogo de interacción ha finalizado. Ejecutando cierre del evento.");
@@ -138,10 +145,9 @@ public class YatiriEvent : MonoBehaviour
         if (panelYatiri != null) panelYatiri.SetActive(false);
 
         GameManager.Instance.MarkEventCompleted(eventID);
-
         GameManager.Instance.SetCinematicMode(false);
         enabled = false;
 
-        RoomsManager.Instance.ChangeLevel("Lvl_1"); 
+        RoomsManager.Instance.ChangeLevel("Lvl_1");
     }
 }

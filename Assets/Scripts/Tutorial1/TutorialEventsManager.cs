@@ -35,6 +35,10 @@ public class TutorialEventsManager : MonoBehaviour
     [Tooltip("Tiempo de pausa después de cada línea (en segundos).")]
     public float linePauseDuration = 1.5f;
 
+    private void Awake()
+    {
+        Transition_Manager.Instance.FadeOut();
+    }
     public void ActivarDialogo()
     {
         if (dialoguePanel != null)
