@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -30,13 +31,19 @@ public class GameManager : MonoBehaviour
 
     private const char Separator = ',';
 
+
+    //Verificar si es la primera vez entrando al juego;
+    private const string FirstTimePlayerKey = "IsFirstTimePlayer";
+
+
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            ClearSavedData(); // Descomentar solo si estás en desarrollo
+            //ClearSavedData(); // Descomentar solo si estás en desarrollo
             LoadGame();
         }
         else
@@ -51,6 +58,25 @@ public class GameManager : MonoBehaviour
         {
             playerTransform = playerGO.transform;
         }
+    }
+
+    public bool IsFirstTimePlayer()
+    {
+        // Si la clave NO existe, es la primera vez.
+        return !PlayerPrefs.HasKey(FirstTimePlayerKey);
+    }
+    public void MarkGameStarted()
+    {
+        if (!PlayerPrefs.HasKey(FirstTimePlayerKey))
+        {
+            PlayerPrefs.SetInt(FirstTimePlayerKey, 1);
+            PlayerPrefs.Save();
+            Debug.Log("Juego marcado como iniciado. Los próximos lanzamientos no serán la primera vez.");
+        }
+    }
+    public void SkipIntro()
+    {
+        SceneManager.LoadScene("MainMenuScene");
     }
     public void SetCinematicMode(bool isActive)
     {
@@ -190,6 +216,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.DeleteKey(EventsSaveKey);
         PlayerPrefs.DeleteKey(SceneSaveKey);
+        PlayerPrefs.DeleteKey(FirstTimePlayerKey); 
         PlayerPrefs.DeleteAll(); 
         completedEvents.Clear();
         PlayerPrefs.Save();

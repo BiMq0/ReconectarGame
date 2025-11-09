@@ -1680,7 +1680,10 @@ MonoBehaviour:
     text: 'De acuerdo, muchas gracias!! '
     expressionIndex: 1
   - speaker: 1
-    text: "Talves... Chiru... De verdad sigues aqu\xED?"
+    text: 'Tal vez... '
+    expressionIndex: 1
+  - speaker: 1
+    text: "Chiru... De verdad sigues aqu\xED?"
     expressionIndex: 1
 --- !u!61 &1969044132
 BoxCollider2D:

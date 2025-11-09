@@ -8,8 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
     public float WalkSpeed = 5f;
-    public float RunSpeed = 8f;
-    public float JumpSpeed = 5f;
+    private bool playingFootSteps = false;
+    public float footstepSpeed = 0.5f;
 
     [Header("Acciones")]
     private InputAction movementAction;
@@ -71,6 +71,8 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             animator.SetFloat("speed", 0f);
+            StopFootSteps();
+
 
             movementAction.Disable();
             jumpAction.Disable();
@@ -120,5 +122,33 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("speed", Math.Abs(movementInput.x));
         Vector2 velocity = new Vector2(movementInput.x * WalkSpeed, rb.velocity.y);
         rb.velocity = velocity;
+        if (rb.velocity.magnitude > 0.01f) // Player está MOVIENDO
+        {
+            if (!playingFootSteps) // Y el loop NO está corriendo
+            {
+                StartFootSteps(); // INICIAR
+            }
+        }
+        else 
+        {
+            StopFootSteps(); // DETENER
+        }
     }
+
+    void StartFootSteps()
+    {
+        playingFootSteps = true;
+        InvokeRepeating(nameof(PlayFootstep),0f,footstepSpeed);
+    }
+    void PlayFootstep()
+    {
+        SoundEffectManager.Play("Pasos");
+
+    }
+    void StopFootSteps()
+    {
+        playingFootSteps = false;
+        CancelInvoke(nameof(PlayFootstep));
+    }
+
 }

@@ -43,7 +43,7 @@ public class JugoDialogueManager : MonoBehaviour
     // =============================================================
     [Header("Ajustes de Diálogo")]
     [Tooltip("Velocidad de tipeo en CARACTERES POR SEGUNDO (ej: 20.0).")]
-    public float typeSpeed = 20.0f;
+    public float typeSpeed = 25.0f;
     public float autoPauseDuration = 1.5f;
 
     private Coroutine currentDialogueCoroutine = null;

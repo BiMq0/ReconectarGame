@@ -71,6 +71,11 @@ public class DogEvent : MonoBehaviour
         }
         StartCoroutine(DogEventSecuence());
     }
+
+    public void OnDogExplosion()
+    {
+        SoundEffectManager.Play("Explosion");
+    }
     public void OnDogAnimationEnd()
     {
         Debug.Log("DEBUG: Evento de Animación del perro ha terminado.");
